@@ -1,27 +1,22 @@
-import time 
+import time
 import os
 import psutil
-from multiprocessing import Process
 from threading import Thread
-from Sniffer import pack_info_extract
+from Sniffer import pack_info_extract, check_flow, ml_inference
+from honeypot_reciever import start_receiver
 
-proc = psutil.Process(os.getpid()) #perf
-proc.cpu_percent() #perf
+proc = psutil.Process(os.getpid())
+proc.cpu_percent()
 
-t1 = Thread(target=pack_info_extract)
-p1 = Process(target='PlaceHolder')
+start = time.time()
 
-start = time.time() #perf
+Thread(target=pack_info_extract).start()
+Thread(target=check_flow).start()
+Thread(target=ml_inference).start()
+Thread(target=start_receiver).start()
 
-t1.start()
-p1.start()
+end = time.time()
 
-
-end = time.time() #perf
-
-print(end-start," time taken") 
-print(proc.cpu_percent()) 
-print(proc.memory_info().rss/1024/1024, "MB ") 
-
-# Threading network information 
-# Multi-processing ML model
+print(end-start, "time taken")
+print(proc.cpu_percent())
+print(proc.memory_info().rss/1024/1024, "MB")

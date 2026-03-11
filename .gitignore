@@ -1,5 +1,12 @@
 __pycache__
 *.csv
 Model_.py
-testing.py
-Train.py
+edit_csv.py
+v3_model.json 
+
+#Ready soon
+honeypot_reciever.py
+honeypot.py
+honeypot_deploy.py
+GUI.py
+testingui.py
