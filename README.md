@@ -159,6 +159,8 @@ Link:- [Python](https://www.python.org/downloads/)
 
 ## Working Demo [to show project functionality]
 
+### Pre-requisites for Testing
+
 Virtual Machine settings
 In the network interface(of Virtual box in this case), set it to Host-only Adapter and Promiscious Mode Allow All  
 
@@ -175,11 +177,27 @@ In the network interface(of Virtual box in this case), set it to Host-only Adapt
 ![Window ipv4](images/windows_ipconfig.png)
 
 
-*Simulated Denial of Service*
+### Simulated Denial of Service
+
+![Pre Attack](images/IDS_pre_attack.png)
+
+*Figure : This is an image before the attack*
 
 
+using something like hping3, we can show the functinality of the project
 
-*Port Honeypots*
+
+![Attack_cmd](images/Kali_hping3_syn_dos.png)
+
+*Figure : This is the hping3 command performed*
+
+
+![Attack](images/IDS_recognizing_attack.png)
+
+*Figure : This is an image during the attack*
+
+
+### Port Honeypots
 
 
 
