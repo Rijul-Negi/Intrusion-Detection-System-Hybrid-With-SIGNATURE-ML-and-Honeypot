@@ -157,7 +157,31 @@ Link:- [Python](https://www.python.org/downloads/)
 - Firefox
 - Microsoft Edge
 
-## Working Demonstration
+## Working Demo [to show project functionality]
+
+Virtual Machine settings
+In the network interface(of Virtual box in this case), set it to Host-only Adapter and Promiscious Mode Allow All  
+
+![Virtual Machine Setting](images/VM_Host_Only_Adapter.png)
+
+
+*Ipv4 address of the Attacking system is as below:*
+
+![Kali ipv4](images/kali_ip_addr.png)
+
+
+*Ipv4 address of the Victim System*
+
+![Window ipv4](images/windows_ipconfig.png)
+
+
+*Simulated Denial of Service*
+
+
+
+*Port Honeypots*
+
+
 
 ## Credits
 NF-UNSW-NB15-v3 and NF-ToN-IoT-v3 datasets:
