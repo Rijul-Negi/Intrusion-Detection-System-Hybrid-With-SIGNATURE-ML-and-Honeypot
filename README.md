@@ -1,4 +1,14 @@
 # Intrusion Detection System Hybrid(SIGNATURE + ML) and Honeypot
+## Ethical Use & Security Notice
+
+This project includes demonstrations of common network attack techniques (such as simulated denial-of-service traffic) solely for the purpose of testing and validating intrusion detection and honeypot functionality in a controlled environment.
+
+These examples are included for educational and defensive cybersecurity research only.
+
+The author does not condone, support, or encourage the use of this project or any referenced techniques for malicious, illegal, or unauthorized activities.
+
+Users are expected to comply with all applicable laws and only perform testing in environments they own or have explicit permission to test.
+
 
 ## Table of Contexts
 
