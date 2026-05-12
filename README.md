@@ -68,6 +68,9 @@ url = {https://arxiv.org/abs/2503.04404}
 
 CIC-DDoS2019
 ```
-Dr. Iman Sharafaldin, Dr. Saqib Hakak, Dr. Arash Habibi Lashkari Dr. Ali Ghorbani. 
+Dr. Iman Sharafaldin, Dr. Saqib Hakak, Dr. Arash Habibi Lashkari Dr. Ali Ghorbani.
+
+I. Sharafaldin, A. H. Lashkari, S. Hakak and A. A. Ghorbani, "Developing Realistic Distributed Denial of Service (DDoS) Attack Dataset and Taxonomy," 2019 International Carnahan Conference on Security Technology (ICCST), Chennai, India, 2019, pp. 1-8, doi: 10.1109/CCST.2019.8888419. keywords: {Computer crime;Taxonomy;IP networks;Protocols;Cloud computing;Feature extraction;Tools;DDoS;IDS;DDoS Dataset;DDoS taxonomy;Network Traffic},
+
 https://ieeexplore.ieee.org/abstract/document/8888419
 ```
