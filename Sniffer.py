@@ -14,9 +14,6 @@ alert_queue = Queue()
 flow_table  = {}
 flow_lock   = Lock()
 
-# ─────────────────────────────────────────────
-# FLOW CLASS
-# ─────────────────────────────────────────────
 class Flow:
     def __init__(self, now):
         self.start = now
@@ -44,14 +41,11 @@ class Flow:
         self.last     = now
 
 
-# ─────────────────────────────────────────────
-# PACKET PROCESSING
-# ─────────────────────────────────────────────
 def process_packet(pack):
     if IP not in pack:
         return
 
-    print("PACKET DETECTED")  # DEBUG
+    print("PACKET DETECTED")  
 
     now     = time.time()
     pkt_len = len(pack)
@@ -80,9 +74,6 @@ def process_packet(pack):
         flow.update(pkt_len, flags, win, now)
 
 
-# ─────────────────────────────────────────────
-# FLOW EXPORTER
-# ─────────────────────────────────────────────
 def flow_exporter():
     while True:
         time.sleep(0.5)
@@ -101,9 +92,6 @@ def flow_exporter():
                     check_queue.put((key, flow_table.pop(key)))
 
 
-# ─────────────────────────────────────────────
-# FEATURE ENGINEERING
-# ─────────────────────────────────────────────
 def check_flow():
     while True:
         key, flow = check_queue.get()
@@ -144,9 +132,6 @@ def check_flow():
         })
 
 
-# ─────────────────────────────────────────────
-# SNIFFER ENTRY
-# ─────────────────────────────────────────────
 def pack_info_extract():
     sniff(
         iface=get_if_list(),
