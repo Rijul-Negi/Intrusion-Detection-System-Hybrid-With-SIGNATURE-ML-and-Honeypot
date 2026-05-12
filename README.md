@@ -70,6 +70,13 @@ This Project:-
 - Built using Flask
 - Comes with Both Light and Dark Mode
 
+![Honeypot Logs](images/Dark_Mode_IDS.png)
+
+*Figure : Dark Mode*
+
+![Honeypot Logs](images/Light_Mode_IDS.png)
+
+*Figure : Light Mode*
 
 ## Dependencies
 
