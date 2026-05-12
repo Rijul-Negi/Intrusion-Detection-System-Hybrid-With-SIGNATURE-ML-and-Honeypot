@@ -55,7 +55,7 @@ This Project:-
 
 ### 2. Alert Generation System
 - Generates alerts for detected suspicious activity
-- Classifies flows into 3 different tags (CLEAN, DETECTED, HONEYPOT)
+- Classifies alerts into 3 different tags (CLEAN, DETECTED, HONEYPOT)
 
 ### 3. Port-Based Honeypots
 - Simulates fake activity/purpose on configurable ports
@@ -152,6 +152,10 @@ Link:- [Python](https://www.python.org/downloads/)
 
 ![Linux](images/LINUX.webp)
 
+### Dashboard on working browsers:
+- Chrome
+- Firefox
+- Microsoft Edge
 
 ## Working Demonstration
 
