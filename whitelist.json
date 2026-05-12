@@ -1,5 +1,5 @@
 {
-    "comment": "IPs excluded from detection — still logged but not counted as threats",
+    "comment": "This is adjustable if you want, just like add by putting the ip address in double quotes and commas after it to add more ",
     "ips": [
     ]
 }
