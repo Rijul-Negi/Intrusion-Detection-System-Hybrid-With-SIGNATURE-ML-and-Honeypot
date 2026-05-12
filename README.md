@@ -2,6 +2,13 @@
 
 ## Table of Contexts
 
+- [What is the Project?](#what-is-the-project)
+- [Tech Stack](#tech-stack)
+- [Features](#features)
+- [Dependencies](#dependencies)
+- [Working Demo](#working-demo-to-show-project-functionality)
+- [Credits](#credits)
+
 ## What is the Project?
 
 - An Intrusion Detection System is a tool that is commonly used to monitor the traffic and send Alerts/Information on potentially suspicious
@@ -229,7 +236,8 @@ While the attacker is interacting with ports that would not normally be visible 
 ![honeypot alert](images/honeypot_alert.png)
 
 ## Credits
-NF-UNSW-NB15-v3 and NF-ToN-IoT-v3 datasets:
+
+**NF-UNSW-NB15-v3 and NF-ToN-IoT-v3 datasets:-**
 
 ```
 @misc{luay2025NetFlowDatasetsV3,
@@ -243,11 +251,18 @@ url = {https://arxiv.org/abs/2503.04404}
 }
 ```
 
-CIC-DDoS2019
+**CIC-DDoS2019:-**
 ```
 Dr. Iman Sharafaldin, Dr. Saqib Hakak, Dr. Arash Habibi Lashkari Dr. Ali Ghorbani.
 
 I. Sharafaldin, A. H. Lashkari, S. Hakak and A. A. Ghorbani, "Developing Realistic Distributed Denial of Service (DDoS) Attack Dataset and Taxonomy," 2019 International Carnahan Conference on Security Technology (ICCST), Chennai, India, 2019, pp. 1-8, doi: 10.1109/CCST.2019.8888419. keywords: {Computer crime;Taxonomy;IP networks;Protocols;Cloud computing;Feature extraction;Tools;DDoS;IDS;DDoS Dataset;DDoS taxonomy;Network Traffic},
 
+
 https://ieeexplore.ieee.org/abstract/document/8888419
+```
+
+**Snort Community Ruleset:-**  
+```
+Licensed under the GNU General Public License (GPL)
+These rules are developed and maintained by the Snort open-source community and contributors. All intellectual property rights remain with the original authors.
 ```
