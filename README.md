@@ -70,14 +70,20 @@ This Project:-
 - Built using Flask
 - Comes with Both Light and Dark Mode
 
-![Honeypot Logs](images/Dark_Mode_IDS.png)
+![IDS DARK MODE](images/Dark_Mode_IDS.png)
 *Figure : Dark Mode*
 
 
-![Honeypot Logs](images/Light_Mode_IDS.png)
+![IDS LIGHT MODE](images/Light_Mode_IDS.png)
 *Figure : Light Mode*
 
 ## Dependencies
+
+### Npcap
+Ensure that you have properly installed npcap and specifically checked on the "Install Npcap in WinPcap API-compatible Mode" as shown in the figure below
+
+![NPCAP INSTALLATION PROPERLY](images/npcap.webp)
+*Figure : Make sure this is checked in order for the project to work*
 
 ## Working Demonstration
 
