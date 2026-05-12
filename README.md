@@ -70,17 +70,21 @@ This Project:-
 - Built using Flask
 - Comes with Both Light and Dark Mode
 
+
 ![IDS DARK MODE](images/Dark_Mode_IDS.png)
+
 *Figure : Dark Mode*
 
 
 ![IDS LIGHT MODE](images/Light_Mode_IDS.png)
+
 *Figure : Light Mode*
 
 ## Dependencies
 
 ### Npcap
 Ensure that you have properly installed npcap and specifically checked on the "Install Npcap in WinPcap API-compatible Mode" as shown in the figure below
+
 Link:- [Npcap](https://npcap.com/)
 
 ![NPCAP INSTALLATION PROPERLY](images/npcap.webp)
@@ -136,6 +140,17 @@ Link:- [Python](https://www.python.org/downloads/)
 *Command to Download all*
 
 `pip install flask scapy pandas numpy xgboost scikit-learn psutil`
+
+### Operating Systems
+
+*Supported and Tested on Windows 10/11*
+
+![Windows11](images/WINDOWS11.webp)
+
+
+*Should work on Linux [Depending on Privelege]*
+
+![Linux](images/LINUX.webp)
 
 
 ## Working Demonstration
