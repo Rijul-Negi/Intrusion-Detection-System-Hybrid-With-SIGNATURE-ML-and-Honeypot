@@ -2,7 +2,21 @@
 
 ## Table of Contexts
 
-## What is this?
+## What is the Project?
+
+- An Intrusion Detection System is a tool that is commonly used to monitor the traffic and send Alerts/Information on potentially suspicious
+  behavior and the appropriate source.
+- A Honeypot is a "trap" of sorts, which is often used in order to identify and catch malicious users while avoiding non-malicious ones.
+  By creating a fake target/decoy that would not normally be accessed or interacted with. It can reveal malicious attempts cause harm to an
+  organization and it's infrastructure  
+
+Intrusion Detection Systems come in a few flavors:-
+  1. Signature based
+  2. Anomaly based
+  3. Hybrid [Consisting of both Signature and Anomaly]
+
+This Project is Hybrid, consisting of both a trained model and signature (by parsing the ruleset) based detection.
+Furthermore, Port Honeypots are used and personally configurable with the specific port and banner for each port.
 
 ## Tech Stack
 
