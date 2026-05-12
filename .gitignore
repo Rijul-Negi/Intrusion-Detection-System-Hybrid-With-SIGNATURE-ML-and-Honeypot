@@ -1,12 +1,4 @@
-__pycache__
-*.csv
-Model_.py
-edit_csv.py
-v3_model.json 
-
-#Not Fully satisfactory
-honeypot_reciever.py
-honeypot.py
-honeypot_deploy.py
-GUI.py
-testingui.py
+/Training-Data/
+/Previous-Model-Versions/
+Test.py
+Train.py

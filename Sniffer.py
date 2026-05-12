@@ -1,88 +1,155 @@
-from scapy.all import sniff, IP, TCP, UDP, ICMP, DNS
+from scapy.all import sniff, IP, TCP, UDP, ICMP, DNS, get_if_list
 from queue import Queue
-import pandas as pd
-import xgboost as xgb
+from threading import Lock
 import numpy as np
 import time
 
-EPS         = 1e-6
+from sign import check_signatures, sig_flagged_flows
+
+EPS = 1e-6
+
 check_queue = Queue()
 flow_queue  = Queue()
+alert_queue = Queue()
 flow_table  = {}
+flow_lock   = Lock()
 
-detector   = xgb.XGBClassifier()
-detector.load_model("v3_model.json")
-trained_on = detector.get_booster().feature_names
+# ─────────────────────────────────────────────
+# FLOW CLASS
+# ─────────────────────────────────────────────
+class Flow:
+    def __init__(self, now):
+        self.start = now
+        self.last  = now
 
-def pack_info_extract():
-    def handle(pack):
-        if not IP in pack: return
-        now, pkt  = time.time(), len(pack)
-        proto, ttl = pack[IP].proto, pack[IP].ttl
-        sport = pack[TCP].sport if TCP in pack else (pack[UDP].sport if UDP in pack else 0)
-        dport = pack[TCP].dport if TCP in pack else (pack[UDP].dport if UDP in pack else 0)
-        flags = int(pack[TCP].flags) if TCP in pack else 0
-        win   = pack[TCP].window if TCP in pack else 0
-        key   = (pack[IP].src, pack[IP].dst, sport, dport, proto)
+        self.PROTOCOL  = 0
+        self.L7_PROTO  = 0
 
-        if key not in flow_table:
-            flow_table[key] = {
-                "start": now, "last": now, "PROTOCOL": proto, "L7_PROTO": dport,
-                "IN_BYTES": pkt, "IN_PKTS": 1, "OUT_BYTES": 0, "OUT_PKTS": 0,
-                "TCP_FLAGS": flags, "CLIENT_TCP_FLAGS": flags, "SERVER_TCP_FLAGS": 0,
-                "MIN_TTL": ttl, "MAX_TTL": ttl,
-                "LONGEST_FLOW_PKT": pkt, "SHORTEST_FLOW_PKT": pkt,
-                "MIN_IP_PKT_LEN": pkt, "MAX_IP_PKT_LEN": pkt,
-                "RETRANSMITTED_IN_BYTES": 0, "RETRANSMITTED_IN_PKTS": 0,
-                "RETRANSMITTED_OUT_BYTES": 0, "RETRANSMITTED_OUT_PKTS": 0,
-                "TCP_WIN_MAX_IN": win, "TCP_WIN_MAX_OUT": 0,
-                "ICMP_IPV4_TYPE": pack[ICMP].type if ICMP in pack else 0,
-                "DNS_QUERY_TYPE": pack[DNS].qd.qtype if (DNS in pack and pack[DNS].qd) else 0,
-                "DNS_TTL_ANSWER": pack[DNS].an.ttl if (DNS in pack and pack[DNS].an) else 0,
-                "NUM_PKTS_UP_TO_128_BYTES": 0, "NUM_PKTS_128_TO_256_BYTES": 0,
-                "NUM_PKTS_256_TO_512_BYTES": 0, "NUM_PKTS_512_TO_1024_BYTES": 0,
-                "NUM_PKTS_1024_TO_1514_BYTES": 0,
-                "s2d": [], "last_s2d": now,
-            }
-        else:
-            f = flow_table[key]
-            f["IN_BYTES"] += pkt; f["IN_PKTS"] += 1
-            f["TCP_FLAGS"] |= flags; f["CLIENT_TCP_FLAGS"] |= flags
-            f["TCP_WIN_MAX_IN"] = max(f["TCP_WIN_MAX_IN"], win)
-            f["MIN_TTL"] = min(f["MIN_TTL"], ttl); f["MAX_TTL"] = max(f["MAX_TTL"], ttl)
-            f["LONGEST_FLOW_PKT"] = max(f["LONGEST_FLOW_PKT"], pkt)
-            f["SHORTEST_FLOW_PKT"] = min(f["SHORTEST_FLOW_PKT"], pkt)
-            f["MIN_IP_PKT_LEN"] = min(f["MIN_IP_PKT_LEN"], pkt)
-            f["MAX_IP_PKT_LEN"] = max(f["MAX_IP_PKT_LEN"], pkt)
-            f["s2d"].append((now - f["last_s2d"]) * 1000)
-            f["last_s2d"] = now; f["last"] = now
-            b = ["NUM_PKTS_UP_TO_128_BYTES","NUM_PKTS_128_TO_256_BYTES","NUM_PKTS_256_TO_512_BYTES","NUM_PKTS_512_TO_1024_BYTES","NUM_PKTS_1024_TO_1514_BYTES"]
-            f[b[0 if pkt<=128 else 1 if pkt<=256 else 2 if pkt<=512 else 3 if pkt<=1024 else 4]] += 1
-            if now - f["last"] > 60: check_queue.put(flow_table.pop(key))
+        self.IN_BYTES  = 0
+        self.IN_PKTS   = 0
 
-    sniff(prn=handle, store=False)
+        self.TCP_FLAGS      = 0
+        self.TCP_WIN_MAX_IN = 0
 
+        self.s2d      = []
+        self.last_s2d = now
+
+    def update(self, pkt_len, flags, win, now):
+        self.IN_BYTES  += pkt_len
+        self.IN_PKTS   += 1
+        self.TCP_FLAGS |= flags
+
+        self.s2d.append((now - self.last_s2d) * 1000)
+        self.last_s2d = now
+        self.last     = now
+
+
+# ─────────────────────────────────────────────
+# PACKET PROCESSING
+# ─────────────────────────────────────────────
+def process_packet(pack):
+    if IP not in pack:
+        return
+
+    print("PACKET DETECTED")  # DEBUG
+
+    now     = time.time()
+    pkt_len = len(pack)
+
+    ip    = pack[IP]
+    proto = ip.proto
+
+    sport = pack[TCP].sport if TCP in pack else (pack[UDP].sport if UDP in pack else 0)
+    dport = pack[TCP].dport if TCP in pack else (pack[UDP].dport if UDP in pack else 0)
+    flags = int(pack[TCP].flags) if TCP in pack else 0
+    win   = pack[TCP].window    if TCP in pack else 0
+
+    key = (ip.src, ip.dst, sport, dport, proto)
+
+    check_signatures(pack, key)
+
+    with flow_lock:
+        flow = flow_table.get(key)
+
+        if flow is None:
+            flow = Flow(now)
+            flow.PROTOCOL = proto
+            flow.L7_PROTO = dport
+            flow_table[key] = flow
+
+        flow.update(pkt_len, flags, win, now)
+
+
+# ─────────────────────────────────────────────
+# FLOW EXPORTER
+# ─────────────────────────────────────────────
+def flow_exporter():
+    while True:
+        time.sleep(0.5)
+        now = time.time()
+
+        with flow_lock:
+            keys = list(flow_table.keys())
+
+        for key in keys:
+            with flow_lock:
+                flow = flow_table.get(key)
+                if flow is None:
+                    continue
+
+                if (now - flow.last > 0.5) or flow.IN_PKTS >= 3:
+                    check_queue.put((key, flow_table.pop(key)))
+
+
+# ─────────────────────────────────────────────
+# FEATURE ENGINEERING
+# ─────────────────────────────────────────────
 def check_flow():
     while True:
-        f   = check_queue.get()
-        dur = max((f["last"] - f["start"]) * 1000, 1)
-        s2d = f["s2d"]
-        iat = lambda x: [min(x),max(x),float(np.mean(x)),float(np.std(x))] if x else [0,0,0,0]
-        s   = iat(s2d)
-        flow_queue.put({**{k: f[k] for k in ["PROTOCOL","L7_PROTO","IN_BYTES","IN_PKTS","OUT_BYTES","OUT_PKTS","TCP_FLAGS","CLIENT_TCP_FLAGS","SERVER_TCP_FLAGS","MIN_TTL","MAX_TTL","LONGEST_FLOW_PKT","SHORTEST_FLOW_PKT","MIN_IP_PKT_LEN","MAX_IP_PKT_LEN","RETRANSMITTED_IN_BYTES","RETRANSMITTED_IN_PKTS","RETRANSMITTED_OUT_BYTES","RETRANSMITTED_OUT_PKTS","NUM_PKTS_UP_TO_128_BYTES","NUM_PKTS_128_TO_256_BYTES","NUM_PKTS_256_TO_512_BYTES","NUM_PKTS_512_TO_1024_BYTES","NUM_PKTS_1024_TO_1514_BYTES","TCP_WIN_MAX_IN","TCP_WIN_MAX_OUT","ICMP_IPV4_TYPE","DNS_QUERY_TYPE","DNS_TTL_ANSWER"]},
-            "FLOW_DURATION_MILLISECONDS": dur, "DURATION_IN": dur, "DURATION_OUT": dur,
-            "SRC_TO_DST_SECOND_BYTES": f["IN_BYTES"]/(dur/1000+EPS), "DST_TO_SRC_SECOND_BYTES": 0,
-            "SRC_TO_DST_AVG_THROUGHPUT": f["IN_BYTES"]/(dur/1000+EPS), "DST_TO_SRC_AVG_THROUGHPUT": 0,
-            "SRC_TO_DST_IAT_MIN": s[0], "SRC_TO_DST_IAT_MAX": s[1], "SRC_TO_DST_IAT_AVG": s[2], "SRC_TO_DST_IAT_STDDEV": s[3],
-            "DST_TO_SRC_IAT_MIN": 0, "DST_TO_SRC_IAT_MAX": 0, "DST_TO_SRC_IAT_AVG": 0, "DST_TO_SRC_IAT_STDDEV": 0,
-            "IN_BYTES_PER_SEC": f["IN_BYTES"]/(dur+EPS), "IN_PKTS_PER_SEC": f["IN_PKTS"]/(dur+EPS),
-            "OUT_IN_BYTES_RATIO": 1.0, "PKT_SIZE_AVG": f["IN_BYTES"]/(f["IN_PKTS"]+EPS),
+        key, flow = check_queue.get()
+
+        dur     = max((flow.last - flow.start) * 1000, 1)
+        dur_sec = dur / 1000.0
+
+        s2d = flow.s2d
+        stats = [
+            min(s2d) if s2d else 0.0,
+            max(s2d) if s2d else 0.0,
+            float(np.mean(s2d)) if s2d else 0.0,
+            float(np.std(s2d)) if s2d else 0.0
+        ]
+
+        sig_flagged = key in sig_flagged_flows
+        sig_flagged_flows.discard(key)
+
+        flow_queue.put({
+            "features": {
+                "PROTOCOL": flow.PROTOCOL,
+                "L7_PROTO": flow.L7_PROTO,
+                "IN_BYTES": flow.IN_BYTES,
+                "IN_PKTS": flow.IN_PKTS,
+                "FLOW_DURATION_MILLISECONDS": dur,
+                "SRC_TO_DST_IAT_MIN": stats[0],
+                "SRC_TO_DST_IAT_MAX": stats[1],
+                "SRC_TO_DST_IAT_AVG": stats[2],
+                "SRC_TO_DST_IAT_STDDEV": stats[3],
+                "IN_BYTES_PER_SEC": flow.IN_BYTES / (dur_sec + EPS),
+                "IN_PKTS_PER_SEC": flow.IN_PKTS / (dur_sec + EPS),
+                "OUT_IN_BYTES_RATIO": 1.0,
+                "PKT_SIZE_AVG": flow.IN_BYTES / (flow.IN_PKTS + 1),
+            },
+            "sig_flagged": sig_flagged,
+            "src": key[0],
+            "dport": key[3],
         })
 
-def ml_inference():
-    while True:
-        features   = flow_queue.get()
-        df         = pd.DataFrame([features]).reindex(columns=trained_on, fill_value=0)
-        confidence = detector.predict_proba(df)[0][1]
-        if confidence >= 0.5:
-            print(f"[ALERT] confidence={confidence:.2f}")
+
+# ─────────────────────────────────────────────
+# SNIFFER ENTRY
+# ─────────────────────────────────────────────
+def pack_info_extract():
+    sniff(
+        iface=get_if_list(),
+        prn=process_packet,
+        store=False
+    )

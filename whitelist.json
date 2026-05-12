@@ -1,0 +1,5 @@
+{
+    "comment": "IPs excluded from detection — still logged but not counted as threats",
+    "ips": [
+    ]
+}
