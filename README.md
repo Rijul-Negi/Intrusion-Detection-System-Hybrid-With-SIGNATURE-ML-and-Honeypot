@@ -46,6 +46,30 @@ Furthermore, Port Honeypots are used and personally configurable with the specif
 - JSON
 
 ## Features
+Hybrid IDS using ML, Signature and Honeypot
+
+This Project:-
+### 1. Real-time Monitoring
+- Continuously monitors network traffic in real time
+- Uses multi-threading to handle multiple processes concurrently (packet sniffing, analysis, and alerting) without blocking execution
+
+### 2. Alert Generation System
+- Generates alerts for detected suspicious activity
+- Classifies flows into 3 different tags (CLEAN, DETECTED, HONEYPOT)
+
+### 3. Port-Based Honeypots
+- Simulates fake activity/purpose on configurable ports
+- Captures and logs interaction attempts (would not normally be seen without an nmap scan)
+
+### 4. Whitelist Filtering
+- Allows trusted IPs/services to bypass detection rules [configurable]
+- Reduces false positives and improves accuracy
+
+### 5. Graphical User Interface (Dashboard)
+- Web-based interface for being notified of alerts in real time
+- Built using Flask
+- Comes with Both Light and Dark Mode
+
 
 ## Dependencies
 
