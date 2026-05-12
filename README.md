@@ -12,3 +12,8 @@ url = {https://arxiv.org/abs/2503.04404}
 }
 ```
 
+Credit for CIC-DDoS2019
+```
+Dr. Iman Sharafaldin, Dr. Saqib Hakak, Dr. Arash Habibi Lashkari Dr. Ali Ghorbani. 
+https://ieeexplore.ieee.org/abstract/document/8888419
+```
