@@ -81,10 +81,20 @@ This Project:-
 
 ### Npcap
 Ensure that you have properly installed npcap and specifically checked on the "Install Npcap in WinPcap API-compatible Mode" as shown in the figure below
+Link:- [Npcap](https://npcap.com/)
 
 ![NPCAP INSTALLATION PROPERLY](images/npcap.webp)
 
 *Figure : Make sure this is checked in order for the project to work*
+
+### Python
+Recommended: Python 3.8 or higher as a safe bet
+
+![PYTHON](images/PYTHON.png)
+
+*Figure : Make sure you pick a stable recent version*
+
+Link:- [Python](https://www.python.org/downloads/)
 
 ## Working Demonstration
 
