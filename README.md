@@ -68,6 +68,7 @@ This Project:-
 ### 5. Graphical User Interface (Dashboard)
 - Web-based interface for being notified of alerts in real time
 - Built using Flask
+- Shows Uptime, alerts, clean flows, cpu core usage, memory usage (in MB), whether or not the IDS is online of offline, top attackers and ports are which there are said attack
 - Comes with Both Light and Dark Mode
 
 
@@ -161,18 +162,18 @@ Link:- [Python](https://www.python.org/downloads/)
 
 ### Pre-requisites for Testing
 
-Virtual Machine settings
+- *Virtual Machine settings*
 In the network interface(of Virtual box in this case), set it to Host-only Adapter and Promiscious Mode Allow All  
 
 ![Virtual Machine Setting](images/VM_Host_Only_Adapter.png)
 
 
-*Ipv4 address of the Attacking system is as below:*
+- *Ipv4 address of the Attacking system is as below:*
 
 ![Kali ipv4](images/kali_ip_addr.png)
 
 
-*Ipv4 address of the Victim System*
+- *Ipv4 address of the Victim System*
 
 ![Window ipv4](images/windows_ipconfig.png)
 
@@ -199,7 +200,33 @@ using something like hping3, we can show the functinality of the project
 
 ### Port Honeypots
 
+First we shall configures the ports where the fake/honey services shall be present on which port
+In the honeypot.py file, we can clearly see it and can be configured
 
+![Honey pot config](images/pre-config-honeypot-ports.png)
+
+*Figure : In this case, I have personally set up some*
+
+
+Now the attacker will do an nmap service scan of services.
+This is an example of what they may see
+
+![nmap scan](images/nmap_service_1_honeypots_red_line.png)
+![nmap scan](images/nmap_service_2.png)
+
+*Figure : I have put the red line on the ports that were our set up honeypots*
+
+
+Now the attacker may attempt to connect to the port that they percieve as easy pickings 
+
+![honeypot detect 1](images/honeypot_detect_1.png)
+
+*Figure : In this case port 23 (The login in the port is deception and not real, can be configured to log attacker's inputs into it) *
+
+
+While the attacker is interacting with ports that would not normally be visible to a non-malicious user, An alert is sent showing the port and ipv4 address of the attacker.
+
+![honeypot alert](images/honeypot_alert.png)
 
 ## Credits
 NF-UNSW-NB15-v3 and NF-ToN-IoT-v3 datasets:
