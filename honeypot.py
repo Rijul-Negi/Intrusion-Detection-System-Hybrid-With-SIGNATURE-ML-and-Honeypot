@@ -2,7 +2,7 @@ import socket
 import threading
 import time
 
-# ports nobody should ever connect to — any hit is guaranteed malicious
+# This is adjustable if you want, just like delete or add as per the format given here 
 HONEYPOT_PORTS = [23, 80, 3389, 5900, 8888]
 
 BANNERS = {
