@@ -85,7 +85,7 @@ This Project:-
 ### 5. Graphical User Interface (Dashboard)
 - Web-based interface for being notified of alerts in real time
 - Built using Flask
-- Shows Uptime, alerts, clean flows, cpu core usage, memory usage (in MB), whether or not the IDS is online of offline, top attackers and ports are which there are said attack
+- Shows Uptime, alerts, clean flows, cpu core usage, memory usage (in MB), whether or not the IDS is online or offline, top attackers and ports that are under attack
 - Comes with Both Light and Dark Mode
 
 
@@ -166,7 +166,7 @@ Link:- [Python](https://www.python.org/downloads/)
 ![Windows11](images/WINDOWS11.webp)
 
 
-*Should work on Linux [Depending on Privelege]*
+*Should work on Linux [Depending on Privilege]*
 
 ![Linux](images/LINUX.webp)
 
