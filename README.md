@@ -96,6 +96,32 @@ Recommended: Python 3.8 or higher as a safe bet
 
 Link:- [Python](https://www.python.org/downloads/)
 
+### Libraries and Framework
+
+*Flask*
+`pip install flask`
+
+*Scapy*
+`pip install scapy`
+
+*Pandas*
+`pip install pandas`
+
+*NumPy*
+`pip install numpy`
+
+*XGBoost*
+`pip install xgboost`
+
+*Scikit-learn*
+`pip install scikit-learn`
+
+*Psutil*
+`pip install psutil`
+
+*Command to Download all*
+`pip install flask scapy pandas numpy xgboost scikit-learn psutil`
+
 ## Working Demonstration
 
 ## Credits
