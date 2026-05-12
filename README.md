@@ -20,6 +20,31 @@ Furthermore, Port Honeypots are used and personally configurable with the specif
 
 ## Tech Stack
 
+### Programming Languages
+- Python
+- HTML
+- CSS
+
+### Machine Learning & Data Processing
+- XGBoost
+- Pandas
+
+### Networking & Comms
+- Scapy
+- Socket Programming
+
+### Web Framework
+- Flask
+
+### System Monitoring
+- Psutil
+
+### Concurrency - Multithreading
+- Python Threading
+
+### Data Format
+- JSON
+
 ## Features
 
 ## Dependencies
